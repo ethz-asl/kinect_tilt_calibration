@@ -1,0 +1,11 @@
+<launch>
+	<env name="ROSCONSOLE_CONFIG_FILE" value="$(find kinect_tilt_calibration)/launch/custom_rosconsole.conf"/>
+	
+ 	<node pkg="kinect_tilt_calibration" type="kinect_tilt_calibration" name="kinect_tilt_calibration" output="screen">
+ 		 <param name="topic" value="/camera/depth/points" />
+ 		 <param name="tilting_frame" value="camera_link" />
+ 		 <param name="number_of_snapshots" value="10" />
+ 		 <param name="distance_threshold" value="0.01" />
+    </node>
+
+</launch>
