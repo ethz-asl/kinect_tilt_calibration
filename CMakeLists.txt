@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(kinect_tilt_calibration)
 
-set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
 # Set the build type.  Options are:
 #  Coverage       : w/ debug symbols, w/o optimization, w/ code-coverage
@@ -24,7 +24,15 @@ find_package(catkin REQUIRED
 
 ## System dependencies are found with CMake's conventions
 find_package(Eigen REQUIRED)
-find_package(Kindr REQUIRED)
+
+# Attempt to find catkinized kindr
+find_package(kindr QUIET)
+if(NOT kindr_FOUND)
+  # Attempt to find package-based kindr
+  find_package(PkgConfig REQUIRED)
+  pkg_check_modules(kindr kindr REQUIRED)
+endif()
+
 
 ###################################
 ## catkin specific configuration ##
@@ -51,7 +59,7 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  ${Kindr_INCLUDE_DIRS}
+  ${kindr_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
