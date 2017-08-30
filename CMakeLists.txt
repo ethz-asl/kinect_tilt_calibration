@@ -20,6 +20,7 @@ find_package(catkin REQUIRED
 	pcl_ros
 	tf
 	geometry_msgs
+	kindr_ros
 )
 
 ## System dependencies are found with CMake's conventions

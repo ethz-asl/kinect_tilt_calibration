@@ -5,6 +5,7 @@
  *      Author: Péter Fankhauser
  *   Institute: ETH Zurich, Autonomous Systems Lab
  */
+
 #include "kinect_tilt_calibration/KinectTiltCalibration.hpp"
 
 // ROS
@@ -22,9 +23,8 @@
 #include <pcl/segmentation/sac_segmentation.h>
 
 // Kindr
-#include <kindr/rotations/RotationEigen.hpp>
-#include <kindr/poses/PoseEigen.hpp>
-#include <kindr/thirdparty/ros/RosEigen.hpp>
+#include <kindr/Core>
+#include <kindr_ros/kindr_ros.hpp>
 
 using namespace std;
 
@@ -114,8 +114,8 @@ bool KinectTiltCalibration::computeRotation(const Eigen::Vector3d& surfaceNormal
     ROS_ERROR("%s", ex.what());
     return false;
   }
-  kindr::poses::eigen_impl::HomogeneousTransformationPosition3RotationQuaternionD pose;
-  kindr::poses::eigen_impl::convertFromRosTf(transform, pose);
+  kindr::HomTransformQuatD pose;
+  kindr_ros::convertFromRosTf(transform, pose);
   ROS_DEBUG_STREAM("Pose of sensor frame in tilting frame: " << endl << pose << endl);
   Eigen::Vector3d surfaceNormalInTiltingFrame = pose.getRotation().rotate(surfaceNormal);
     if (surfaceNormalInTiltingFrame.z() < 0.0) surfaceNormalInTiltingFrame = -surfaceNormalInTiltingFrame;
@@ -123,12 +123,12 @@ bool KinectTiltCalibration::computeRotation(const Eigen::Vector3d& surfaceNormal
 
   // Compute calibration angles.
   Eigen::Vector3d reference = Eigen::Vector3d::UnitZ();
-  kindr::rotations::eigen_impl::RotationQuaternionPD rotation;
+  kindr::RotationQuaternionPD rotation;
   rotation.setFromVectors(surfaceNormalInTiltingFrame, reference);
 
   cout << "===============================" << endl;
   cout << "Quaternion (qx, qy, qz, qw): " << rotation.x() << ", " << rotation.y() << ", " << rotation.z() << ", " << rotation.w() << endl;
-  kindr::rotations::eigen_impl::EulerAnglesYprPD euler(rotation);
+  kindr::EulerAnglesYprPD euler(rotation);
   Eigen::Vector3d eulerVector = euler.getUnique().toImplementation() / M_PI * 180.0;
   cout << "Pitch: " << eulerVector(1) << " deg, Roll: " << eulerVector(2) << " deg" << endl; // Yaw should be 0 up to numerical errors.
   cout << "===============================" << endl;
