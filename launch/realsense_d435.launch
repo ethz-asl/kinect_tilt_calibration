@@ -1,0 +1,11 @@
+<launch>
+	<env name="ROSCONSOLE_CONFIG_FILE" value="$(find kinect_tilt_calibration)/launch/custom_rosconsole.conf"/>
+
+ 	<node pkg="kinect_tilt_calibration" type="kinect_tilt_calibration" name="kinect_tilt_calibration" output="screen">
+ 		 <param name="topic" value="/realsense_d435/depth/color/points" />
+ 		 <param name="tilting_frame" value="realsense_d435_camera" />
+ 		 <param name="number_of_snapshots" value="10" />
+ 		 <param name="distance_threshold" value="0.01" />
+    </node>
+
+</launch>
